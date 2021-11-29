@@ -1,11 +1,23 @@
-const router = require('express').Router();
-const User = require('./user.model');
-const usersService = require('./user.service');
+const {
+  getUserOpts,
+  getUsersOpts,
+  postUserOpts,
+  deleteUserOpts,
+  putUserOpts,
+} = require('./user.schemas');
 
-router.route('/').get(async (req, res) => {
-  const users = await usersService.getAll();
-  // map user fields to exclude secret fields like "password"
-  res.json(users.map(User.toResponse));
-});
+function userRoutes(fastify, options, done) {
+  fastify.get('/users', getUsersOpts);
 
-module.exports = router;
+  fastify.get('/users/:userId', getUserOpts);
+
+  fastify.post('/users', postUserOpts);
+
+  fastify.delete('/users/:userId', deleteUserOpts);
+
+  fastify.put('/users/:userId', putUserOpts);
+
+  done();
+}
+
+module.exports = userRoutes;
