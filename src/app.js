@@ -2,8 +2,10 @@ const fastify = require('fastify')({ logger: true });
 const swaggerUI = require('fastify-swagger');
 const path = require('path');
 const userRouter = require('./resources/users/user.router');
+const boardRouter = require('./resources/boards/board.router');
 
 fastify.register(userRouter);
+fastify.register(boardRouter);
 fastify.register(swaggerUI, {
   exposeRoute: true,
   routePrefix: '/doc',
