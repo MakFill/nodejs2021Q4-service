@@ -34,9 +34,7 @@ const removeBoard = async (req, reply) => {
 
 const updateBoard = async (req, reply) => {
   const { boardId } = req.params;
-  console.log(req.params, 'BOARD!!!!');
   const board = await boardsRepo.update(boardId, req.body);
-  console.log(board, 'BOARD!!!!');
   if (!board) {
     reply.code(404).send('Board not found');
   } else {
