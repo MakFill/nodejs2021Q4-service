@@ -1,4 +1,5 @@
 const db = require('./users.db.json');
+const dbTasks = require('../tasks/tasks.db.json');
 
 const getAll = async () => db;
 
@@ -14,6 +15,12 @@ const add = async (user) => {
 
 const remove = async (id) => {
   const index = db.findIndex((user) => user.id === id);
+
+  dbTasks.forEach((task, ind) => {
+    if (task.userId === id) {
+      dbTasks[ind].userId = null;
+    }
+  });
   db.splice(index, 1);
   return index;
 };

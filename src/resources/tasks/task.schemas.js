@@ -21,13 +21,14 @@ const Task = {
 
 const TaskBody = {
   type: 'object',
-  required: ['title', 'order', 'description', 'userId', 'columnId'],
+  required: ['title', 'order', 'description', 'userId'],
   properties: {
     title: { type: 'string' },
     order: { type: 'number' },
     description: { type: 'string' },
     userId: { type: ['string', 'null'] },
     columnId: { type: ['string', 'null'] },
+    boardId: { type: 'string' },
   },
 };
 

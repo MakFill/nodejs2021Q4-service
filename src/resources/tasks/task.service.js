@@ -4,7 +4,12 @@ const tasksRepo = require('./task.memory.repository');
 const getAllTasks = async (req, reply) => {
   const { boardId } = req.params;
   const tasks = await tasksRepo.getAll(boardId);
-  reply.send(tasks);
+
+  if (!tasks) {
+    reply.code(404).send('Board not found');
+  } else {
+    reply.send(tasks);
+  }
 };
 
 const getTask = async (req, reply) => {
@@ -21,7 +26,11 @@ const addTask = async (req, reply) => {
   const { boardId } = req.params;
   const newTask = { ...req.body, id: uuidv4() };
   const task = await tasksRepo.add(boardId, newTask);
-  reply.code(201).send(task);
+  if (!task) {
+    reply.code(404).send('Board not found');
+  } else {
+    reply.code(201).send(task);
+  }
 };
 
 const removeTask = async (req, reply) => {
