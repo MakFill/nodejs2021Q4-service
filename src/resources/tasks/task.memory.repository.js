@@ -1,71 +1,52 @@
-const dbTasks = require('./tasks.db.json');
-const dbBoards = require('../boards/boards.db.json');
-// const dbUsers = require('../users/users.db.json');
+const db = require('../db.json')[0];
+const { checkIsBoardExist } = require('../../helpers/checkIsBoardExist');
 
 const getAll = async (boardId) => {
-  try {
-    const board = await dbBoards.find((elem) => elem.id === boardId);
-    if (board.id) {
-      const tasks = await dbTasks.filter((elem) => elem.boardId === boardId);
-      return tasks;
-    }
-  } catch (err) {
-    return null;
+  if (checkIsBoardExist(boardId)) {
+    const tasks = db.tasks.filter((elem) => elem.boardId === boardId);
+    return tasks;
   }
+  return null;
 };
 
 const getOne = async (boardId, taskId) => {
-  try {
-    const board = await dbBoards.find((elem) => elem.id === boardId);
-    if (board.id) {
-      const tasks = await dbTasks.filter((elem) => elem.boardId === boardId);
-      const task = await tasks.find((el) => el.id === taskId);
+  if (checkIsBoardExist(boardId)) {
+    const tasks = db.tasks.filter((elem) => elem.boardId === boardId);
+    try {
+      const task = tasks.find((el) => el.id === taskId);
       return task;
+    } catch (err) {
+      return null;
     }
-  } catch (err) {
-    return null;
   }
+  return null;
 };
 
 const add = async (boardId, task) => {
-  try {
-    const board = await dbBoards.find((elem) => elem.id === boardId);
-    if (board.id) {
-      const taskObj = { ...task, boardId };
-      dbTasks.push(taskObj);
-      return taskObj;
-    }
-  } catch (err) {
-    return null;
+  if (checkIsBoardExist(boardId)) {
+    const taskObj = { ...task, boardId };
+    db.tasks.push(taskObj);
+    return taskObj;
   }
+  return null;
 };
 
 const remove = async (taskId, boardId) => {
-  try {
-    const board = await dbBoards.find((elem) => elem.id === boardId);
-
-    if (board.id) {
-      const index = dbTasks.findIndex((task) => task.id === taskId);
-      dbTasks.splice(index, 1);
-      return index;
-    }
-  } catch (err) {
-    return null;
+  if (checkIsBoardExist(boardId)) {
+    const index = db.tasks.findIndex((task) => task.id === taskId);
+    db.tasks.splice(index, 1);
+    return index;
   }
+  return null;
 };
 
 const update = async (taskId, boardId, task) => {
-  try {
-    const board = await dbBoards.find((elem) => elem.id === boardId);
-
-    if (board.id) {
-      const index = dbTasks.findIndex((elem) => elem.id === taskId);
-      dbTasks[index] = { ...task, taskId };
-      return dbTasks[index];
-    }
-  } catch (err) {
-    return null;
+  if (checkIsBoardExist(boardId)) {
+    const index = db.tasks.findIndex((elem) => elem.id === taskId);
+    db.tasks[index] = { ...task, taskId };
+    return db.tasks[index];
   }
+  return null;
 };
 
 module.exports = { getAll, getOne, add, remove, update };

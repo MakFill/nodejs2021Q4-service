@@ -1,34 +1,33 @@
-const db = require('./users.db.json');
-const dbTasks = require('../tasks/tasks.db.json');
+const db = require('../db.json')[0];
 
-const getAll = async () => db;
+const getAll = async () => db.users;
 
 const getOne = async (id) => {
-  const item = await db.find((elem) => elem.id === id);
+  const item = db.users.find((elem) => elem.id === id);
   return item;
 };
 
 const add = async (user) => {
-  db.push(user);
+  db.users.push(user);
   return user;
 };
 
 const remove = async (id) => {
-  const index = db.findIndex((user) => user.id === id);
+  const index = db.users.findIndex((user) => user.id === id);
 
-  dbTasks.forEach((task, ind) => {
+  db.tasks.forEach((task, ind) => {
     if (task.userId === id) {
-      dbTasks[ind].userId = null;
+      db.tasks[ind].userId = null;
     }
   });
-  db.splice(index, 1);
+  db.users.splice(index, 1);
   return index;
 };
 
 const update = async (id, user) => {
-  const index = db.findIndex((el) => el.id === id);
-  db[index] = { ...user, id };
-  return db[index];
+  const index = db.users.findIndex((el) => el.id === id);
+  db.users[index] = { ...user, id };
+  return db.users[index];
 };
 
 module.exports = { getAll, getOne, add, remove, update };

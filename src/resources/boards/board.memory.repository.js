@@ -1,34 +1,32 @@
-const db = require('./boards.db.json');
-let dbTasks = require('../tasks/tasks.db.json');
+const db = require('../db.json')[0];
 
-const getAll = async () => db;
+const getAll = async () => db.boards;
 
 const getOne = async (id) => {
-  const item = await db.find((elem) => elem.id === id);
+  const item = db.boards.find((elem) => elem.id === id);
   return item;
 };
 
 const add = async (board) => {
-  db.push(board);
+  db.boards.push(board);
   return board;
 };
 
 const remove = async (id) => {
-  const index = db.findIndex((board) => board.id === id);
-  // dbTasks.forEach((task, ind) => {
-  //   if (task.boardId === id) {
-  //     dbTasks.splice(ind, 1);
-  //   }
-  // });
-  dbTasks = dbTasks.filter((task) => task.boardId !== id);
-  db.splice(index, 1);
+  const index = db.boards.findIndex((board) => board.id === id);
+  db.tasks.forEach((task, ind) => {
+    if (task.boardId === id) {
+      db.tasks.splice(ind, 1);
+    }
+  });
+  db.boards.splice(index, 1);
   return index;
 };
 
 const update = async (id, board) => {
-  const index = db.findIndex((el) => el.id === id);
-  db[index] = { ...board, id };
-  return db[index];
+  const index = db.boards.findIndex((el) => el.id === id);
+  db.boards[index] = { ...board, id };
+  return db.boards[index];
 };
 
 module.exports = { getAll, getOne, add, remove, update };
