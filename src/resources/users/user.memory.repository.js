@@ -26,6 +26,9 @@ const remove = async (id) => {
 
 const update = async (id, user) => {
   const index = db.users.findIndex((el) => el.id === id);
+  if (index < 0) {
+    return null;
+  }
   db.users[index] = { ...user, id };
   return db.users[index];
 };

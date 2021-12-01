@@ -25,6 +25,9 @@ const remove = async (id) => {
 
 const update = async (id, board) => {
   const index = db.boards.findIndex((el) => el.id === id);
+  if (index < 0) {
+    return null;
+  }
   db.boards[index] = { ...board, id };
   return db.boards[index];
 };

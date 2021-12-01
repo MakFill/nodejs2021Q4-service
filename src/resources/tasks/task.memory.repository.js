@@ -43,6 +43,9 @@ const remove = async (taskId, boardId) => {
 const update = async (taskId, boardId, task) => {
   if (checkIsBoardExist(boardId)) {
     const index = db.tasks.findIndex((elem) => elem.id === taskId);
+    if (index < 0) {
+      return null;
+    }
     db.tasks[index] = { ...task, taskId };
     return db.tasks[index];
   }
