@@ -1,12 +1,17 @@
-const {
+import { FastifyInstance, FastifyPluginOptions } from 'fastify';
+import {
   getBoardOpts,
   getBoardsOpts,
   postBoardOpts,
   deleteBoardOpts,
   putBoardOpts,
-} = require('./board.schemas');
+} from './board.schemas';
 
-function boardRoutes(fastify, options, done) {
+export function boardRoutes(
+  fastify: FastifyInstance,
+  _: FastifyPluginOptions,
+  done: CallableFunction
+) {
   fastify.get('/boards', getBoardsOpts);
 
   fastify.get('/boards/:boardId', getBoardOpts);
@@ -19,5 +24,3 @@ function boardRoutes(fastify, options, done) {
 
   done();
 }
-
-module.exports = boardRoutes;

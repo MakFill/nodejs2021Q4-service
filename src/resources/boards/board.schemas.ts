@@ -1,10 +1,10 @@
-const {
+import {
   getAllBoards,
   getBoard,
   updateBoard,
   addBoard,
   removeBoard,
-} = require('./board.service');
+} from './board.service';
 
 const Board = {
   type: 'object',
@@ -43,7 +43,7 @@ const BoardBody = {
   },
 };
 
-const getBoardsOpts = {
+export const getBoardsOpts = {
   schema: {
     response: {
       200: {
@@ -55,7 +55,7 @@ const getBoardsOpts = {
   handler: getAllBoards,
 };
 
-const getBoardOpts = {
+export const getBoardOpts = {
   schema: {
     response: {
       200: Board,
@@ -64,7 +64,7 @@ const getBoardOpts = {
   handler: getBoard,
 };
 
-const postBoardOpts = {
+export const postBoardOpts = {
   schema: {
     body: BoardBody,
     response: {
@@ -74,11 +74,11 @@ const postBoardOpts = {
   handler: addBoard,
 };
 
-const deleteBoardOpts = {
+export const deleteBoardOpts = {
   handler: removeBoard,
 };
 
-const putBoardOpts = {
+export const putBoardOpts = {
   schema: {
     body: BoardBody,
     response: {
@@ -86,12 +86,4 @@ const putBoardOpts = {
     },
   },
   handler: updateBoard,
-};
-
-module.exports = {
-  getBoardsOpts,
-  getBoardOpts,
-  postBoardOpts,
-  deleteBoardOpts,
-  putBoardOpts,
 };
