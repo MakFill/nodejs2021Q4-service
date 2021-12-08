@@ -1,11 +1,20 @@
-const uuid = require('uuid');
+import { v4 as uuid } from 'uuid';
+import { IUserReqBody } from '../interfaces';
 
-class User {
+export class User {
+  public id;
+
+  public name;
+
+  public login;
+
+  public password;
+
   constructor({
     id = uuid(),
     name = 'USER',
     login = 'user',
-    password = 'P@55w0rd'
+    password = 'P@55w0rd',
   } = {}) {
     this.id = id;
     this.name = name;
@@ -13,10 +22,8 @@ class User {
     this.password = password;
   }
 
-  static toResponse(user) {
+  static toResponse(user: IUserReqBody) {
     const { id, name, login } = user;
     return { id, name, login };
   }
 }
-
-module.exports = User;

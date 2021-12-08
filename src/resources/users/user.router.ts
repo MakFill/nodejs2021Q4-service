@@ -1,12 +1,17 @@
-const {
+import { FastifyInstance, FastifyPluginOptions } from 'fastify';
+import {
   getUserOpts,
   getUsersOpts,
   postUserOpts,
   deleteUserOpts,
   putUserOpts,
-} = require('./user.schemas');
+} from './user.schemas';
 
-function userRoutes(fastify, options, done) {
+export function userRoutes(
+  fastify: FastifyInstance,
+  _: FastifyPluginOptions,
+  done: CallableFunction
+) {
   fastify.get('/users', getUsersOpts);
 
   fastify.get('/users/:userId', getUserOpts);
@@ -19,5 +24,3 @@ function userRoutes(fastify, options, done) {
 
   done();
 }
-
-module.exports = userRoutes;
