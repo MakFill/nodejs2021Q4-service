@@ -1,12 +1,17 @@
-const {
+import { FastifyInstance, FastifyPluginOptions } from 'fastify';
+import {
   getTaskOpts,
   getTasksOpts,
   postTaskOpts,
   deleteTaskOpts,
   putTaskOpts,
-} = require('./task.schemas');
+} from './task.schemas';
 
-function taskRoutes(fastify, options, done) {
+export function taskRoutes(
+  fastify: FastifyInstance,
+  _: FastifyPluginOptions,
+  done: CallableFunction
+) {
   fastify.get('/boards/:boardId/tasks', getTasksOpts);
 
   fastify.get('/boards/:boardId/tasks/:taskId', getTaskOpts);
@@ -19,5 +24,3 @@ function taskRoutes(fastify, options, done) {
 
   done();
 }
-
-module.exports = taskRoutes;

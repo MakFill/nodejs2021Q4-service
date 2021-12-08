@@ -1,10 +1,10 @@
-const {
+import {
   getAllTasks,
   getTask,
   updateTask,
   addTask,
   removeTask,
-} = require('./task.service');
+} from './task.service';
 
 const Task = {
   type: 'object',
@@ -32,7 +32,7 @@ const TaskBody = {
   },
 };
 
-const getTasksOpts = {
+export const getTasksOpts = {
   schema: {
     response: {
       200: {
@@ -44,7 +44,7 @@ const getTasksOpts = {
   handler: getAllTasks,
 };
 
-const getTaskOpts = {
+export const getTaskOpts = {
   schema: {
     response: {
       200: Task,
@@ -53,7 +53,7 @@ const getTaskOpts = {
   handler: getTask,
 };
 
-const postTaskOpts = {
+export const postTaskOpts = {
   schema: {
     body: TaskBody,
     response: {
@@ -63,11 +63,11 @@ const postTaskOpts = {
   handler: addTask,
 };
 
-const deleteTaskOpts = {
+export const deleteTaskOpts = {
   handler: removeTask,
 };
 
-const putTaskOpts = {
+export const putTaskOpts = {
   schema: {
     body: TaskBody,
     response: {
@@ -75,12 +75,4 @@ const putTaskOpts = {
     },
   },
   handler: updateTask,
-};
-
-module.exports = {
-  getTasksOpts,
-  getTaskOpts,
-  postTaskOpts,
-  deleteTaskOpts,
-  putTaskOpts,
 };
