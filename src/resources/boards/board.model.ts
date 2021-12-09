@@ -8,6 +8,12 @@ export class Board {
 
   public columns: IColumn[];
 
+  /**
+   * Create new board by title and columns and generate id by uuid v4.
+   * @param boardFromFE - board object IBoardReqBody.
+   * @returns board object with id === uuid v4 IBoardResBody.
+   */
+
   constructor(boardFromFE: IBoardReqBody) {
     this.id = uuid();
     this.title = boardFromFE.title;
