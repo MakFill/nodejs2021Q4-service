@@ -1,5 +1,4 @@
 export interface IUserReqBody {
-  id: string;
   name: string;
   login: string;
   password: string;
@@ -9,6 +8,7 @@ export interface IUserResBody {
   id: string;
   name: string;
   login: string;
+  password: string;
 }
 
 export interface IUserReqParam {

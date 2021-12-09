@@ -20,10 +20,19 @@ server.register(fastifySwagger, {
   },
 });
 
-server.get('/', (req: FastifyRequest, reply: FastifyReply) => {
+/**
+ * Handle main route and send message to front side if url === '/' or wrong message if url !== '/'
+ * @param req - request to server from front side FastifyRequest.
+ * @param reply - response from server to front side FastifyReply.
+ * @returns void
+ */
+
+const mainRoute = (req: FastifyRequest, reply: FastifyReply) => {
   if (req.url === '/') {
     reply.send('Service is running!');
   } else {
     reply.send('Something went wrong');
   }
-});
+};
+
+server.get('/', mainRoute);
