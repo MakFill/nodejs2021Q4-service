@@ -16,6 +16,12 @@ export class Task {
 
   columnId;
 
+  /**
+   * Create new task by object with type ITaskReqBody and generate id by uuid v4.
+   * @param taskFromFE - task object ITaskReqBody.
+   * @returns task object with id === uuid v4 ITaskResBody.
+   */
+
   constructor(taskFromFE: ITaskReqBody) {
     this.id = uuid();
     this.title = taskFromFE.title;

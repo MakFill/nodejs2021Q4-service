@@ -1,9 +1,15 @@
 import { checkIsBoardExist } from '../boards/board.memory.repository';
-import { IBoardResBody, ITaskResBody, IUserReqBody } from '../interfaces';
+import { IBoardResBody, ITaskResBody, IUserResBody } from '../interfaces';
 
 const db: ITaskResBody[] = [];
 
 export const tasksRepo = {
+  /**
+   * Get all tasks from DB.
+   * @param boardId - board id assigned to this task ITaskResBody['boardId'] or string.
+   * @returns Array of tasks or null Promise\<ITaskResBody[] | null\>.
+   */
+
   getAll: async (boardId: ITaskResBody['boardId']) => {
     if (checkIsBoardExist(boardId)) {
       const tasks = db.filter((elem) => elem.boardId === boardId);
@@ -11,6 +17,13 @@ export const tasksRepo = {
     }
     return null;
   },
+
+  /**
+   * Get one task from DB by id.
+   * @param boardId - board id assigned to this task ITaskResBody['boardId'] or string.
+   * @param taskId - task id ITaskResBody['id'] or string.
+   * @returns one task by id or null Promise \<ITaskResBody | null\>.
+   */
 
   getOne: async (
     boardId: ITaskResBody['boardId'],
@@ -27,6 +40,13 @@ export const tasksRepo = {
     return null;
   },
 
+  /**
+   * Add task to DB.
+   * @param boardId - board id assigned to this task ITaskResBody['boardId'] or string.
+   * @param task - task object ITaskResBody.
+   * @returns added task Promise\<ITaskResBody | null\>.
+   */
+
   add: async (boardId: ITaskResBody['boardId'], task: ITaskResBody) => {
     if (checkIsBoardExist(boardId)) {
       const taskObj = { ...task, boardId };
@@ -35,6 +55,13 @@ export const tasksRepo = {
     }
     return null;
   },
+
+  /**
+   * Remove task from DB.
+   * @param taskId - task id ITaskResBody['id'] or string.
+   * @param boardId - board id assigned to this task ITaskResBody['boardId'] or string.
+   * @returns index of the deleted task in the DB or null Promise\<number | null\>.
+   */
 
   remove: async (
     taskId: ITaskResBody['id'],
@@ -51,6 +78,14 @@ export const tasksRepo = {
     return null;
   },
 
+  /**
+   * Update task in the DB.
+   * @param taskId - task id ITaskResBody['id'] or string.
+   * @param boardId - board id assigned to this task ITaskResBody['boardId'] or string.
+   * @param task - task object ITaskResBody.
+   * @returns updated task object or null Promise\<IBoardResBody | null\>.
+   */
+
   update: async (
     taskId: ITaskResBody['id'],
     boardId: ITaskResBody['boardId'],
@@ -66,20 +101,32 @@ export const tasksRepo = {
     }
     return null;
   },
+};
 
-  setUsersIdToNull: async (id: IUserReqBody['id']) => {
-    db.forEach((task, ind) => {
-      if (task.userId === id) {
-        db[ind].userId = null;
-      }
-    });
-  },
+/**
+ * Set all tasks.userId assigned to deleted user (by user id) to null.
+ * @param id - user id IUserResBody['id'] or string.
+ * @returns Promise\<void\>
+ */
 
-  removeBoardUsers: async (id: IBoardResBody['id']) => {
-    db.forEach((task, ind) => {
-      if (task.boardId === id) {
-        db.splice(ind, 1);
-      }
-    });
-  },
+export const setUsersIdToNull = async (id: IUserResBody['id']) => {
+  db.forEach((task, ind) => {
+    if (task.userId === id) {
+      db[ind].userId = null;
+    }
+  });
+};
+
+/**
+ * Remove all tasks with assigned boardId (by board id).
+ * @param id - board id IBoardResBody['id'] or string.
+ * @returns Promise\<void\>
+ */
+
+export const removeBoardTasks = async (id: IBoardResBody['id']) => {
+  db.forEach((task, ind) => {
+    if (task.boardId === id) {
+      db.splice(ind, 1);
+    }
+  });
 };
