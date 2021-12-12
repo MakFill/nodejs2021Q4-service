@@ -1,10 +1,10 @@
-const {
+import {
   getAllUsers,
   getUser,
   updateUser,
   addUser,
   removeUser,
-} = require('./user.service');
+} from './user.service';
 
 const User = {
   type: 'object',
@@ -25,7 +25,7 @@ const UserBody = {
   },
 };
 
-const getUsersOpts = {
+export const getUsersOpts = {
   schema: {
     response: {
       200: {
@@ -37,7 +37,7 @@ const getUsersOpts = {
   handler: getAllUsers,
 };
 
-const getUserOpts = {
+export const getUserOpts = {
   schema: {
     response: {
       200: User,
@@ -46,7 +46,7 @@ const getUserOpts = {
   handler: getUser,
 };
 
-const postUserOpts = {
+export const postUserOpts = {
   schema: {
     body: UserBody,
     response: {
@@ -56,11 +56,11 @@ const postUserOpts = {
   handler: addUser,
 };
 
-const deleteUserOpts = {
+export const deleteUserOpts = {
   handler: removeUser,
 };
 
-const putUserOpts = {
+export const putUserOpts = {
   schema: {
     body: UserBody,
     response: {
@@ -68,12 +68,4 @@ const putUserOpts = {
     },
   },
   handler: updateUser,
-};
-
-module.exports = {
-  getUsersOpts,
-  getUserOpts,
-  postUserOpts,
-  deleteUserOpts,
-  putUserOpts,
 };
