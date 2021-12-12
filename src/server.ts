@@ -10,4 +10,4 @@ const appRunLogging = () => {
   console.log(`App is running on http://localhost:${PORT}`);
 };
 
-server.listen(PORT, appRunLogging);
+server.listen(PORT || 4000, appRunLogging);

@@ -60,6 +60,6 @@ export const usersRepo = {
       return null;
     }
     db[index] = { ...user, id };
-    return db[index];
+    return { ...user, id };
   },
 };
