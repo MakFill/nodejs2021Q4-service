@@ -1,8 +1,6 @@
 import dotenv from 'dotenv';
 import * as path from 'path';
 
-dotenv.config();
-
 dotenv.config({
   path: path.join(__dirname, '../../.env'),
 });
@@ -13,4 +11,5 @@ export const {
   JWT_SECRET_KEY,
   PORT,
   AUTH_MODE,
+  LOGGER_LVL,
 } = process.env;
