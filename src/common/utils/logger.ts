@@ -55,7 +55,7 @@ export const logger = pino({
 
 export const handleLogging = (server: FastifyInstance) => {
   process.on('uncaughtExceptionMonitor', (err, origin) => {
-    server.log.fatal(err, origin);
+    logger.fatal(err, origin);
 
     process.exit(1);
   });
