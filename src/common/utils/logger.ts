@@ -1,7 +1,6 @@
 import { FastifyInstance } from 'fastify';
 import pino from 'pino';
 import * as path from 'path';
-import { createWriteStream } from 'fs';
 import { statusCodes, loggingLevel } from './index';
 import { LOGGER_LVL } from '../config';
 
@@ -54,29 +53,12 @@ export const logger = pino({
   },
 });
 
-const getErrorStream = (type: string, err: Error | string) => {
-  const writeStream = createWriteStream(
-    path.join(__dirname, '../../../errors.log'),
-    { flags: 'a+' }
-  );
+export const handleLogging = (server: FastifyInstance) => {
+  process.on('uncaughtExceptionMonitor', (err, origin) => {
+    server.log.fatal(err, origin);
 
-  const date = new Date().toLocaleString();
-  process.stderr.write(`[${date}]: ${type} - ${err}\n`);
-  writeStream.write(`[${date}]: ${type} - ${err} \n`, () => {
     process.exit(1);
   });
-};
-
-const handleException = (err: Error): void =>
-  getErrorStream('uncaughtException', err);
-
-const handleRejectedPromise = (reason: string): void =>
-  getErrorStream('unhandledRejection', reason);
-
-export const handleLogging = (server: FastifyInstance) => {
-  process.on('uncaughtException', handleException);
-
-  process.on('unhandledRejection', handleRejectedPromise);
 
   server.addHook('preHandler', (req, _, done) => {
     if (req.body) {
