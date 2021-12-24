@@ -2,12 +2,15 @@ import { PORT } from './common/config';
 import { server } from './app';
 
 /**
- * Logging when App is running
+ * Handle errors when App is running
  * @returns void
  */
 
-const appRunLogging = () => {
-  console.log(`App is running on http://localhost:${PORT}`);
+const appRunLogging = (err: Error) => {
+  if (err) {
+    server.log.fatal(err);
+    process.exit(1);
+  }
 };
 
 server.listen(PORT || 4000, appRunLogging);

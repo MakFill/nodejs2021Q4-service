@@ -1,6 +1,7 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
+import { server } from '../../app';
 import { IUserReqBody, IUserReqParam, IUserResBody } from '../interfaces';
-import { statusCodes } from '../utils';
+import { statusCodes } from '../../common/utils';
 import { usersRepo } from './user.memory.repository';
 import { User } from './user.model';
 
@@ -14,6 +15,7 @@ import { User } from './user.model';
 export const getAllUsers = async (_: FastifyRequest, reply: FastifyReply) => {
   const users: IUserResBody[] = await usersRepo.getAll();
   reply.send(users);
+  server.log.info('Get all Users from DB');
 };
 
 /**
@@ -28,8 +30,10 @@ export const getUser = async (req: FastifyRequest, reply: FastifyReply) => {
   const user: IUserReqBody | undefined = await usersRepo.getOne(userId);
   if (!user) {
     reply.code(statusCodes.NOT_FOUND).send('User not found');
+    server.log.warn(`User ${userId} not found`);
   } else {
     reply.send(user);
+    server.log.info(`Get User ${userId} from DB`);
   }
 };
 
@@ -44,6 +48,7 @@ export const addUser = async (req: FastifyRequest, reply: FastifyReply) => {
   const newUser: IUserResBody = new User(req.body as IUserReqBody);
   const user: IUserResBody = await usersRepo.add(newUser);
   reply.code(statusCodes.ADDED).send(user);
+  server.log.info('User added to DB');
 };
 
 /**
@@ -58,8 +63,10 @@ export const removeUser = async (req: FastifyRequest, reply: FastifyReply) => {
   const userIndex = await usersRepo.remove(userId);
   if (userIndex < 0) {
     reply.code(statusCodes.NOT_FOUND).send('User not found');
+    server.log.warn(`User ${userId} not found and doesn't removed from DB`);
   } else {
     reply.code(statusCodes.DELETED);
+    server.log.info(`User ${userId} removed from DB`);
   }
 };
 
@@ -75,8 +82,10 @@ export const updateUser = async (req: FastifyRequest, reply: FastifyReply) => {
   const user: IUserResBody = new User(req.body as IUserReqBody);
   const newUser: IUserResBody | null = await usersRepo.update(userId, user);
   if (!newUser) {
-    reply.code(statusCodes.NOT_FOUND).send('User not found');
+    reply.code(statusCodes.NOT_FOUND).send(`User ${userId} not found`);
+    server.log.warn(`User ${userId} not found and doesn't updated`);
   } else {
     reply.send(newUser);
+    server.log.info(`User ${userId} updated`);
   }
 };

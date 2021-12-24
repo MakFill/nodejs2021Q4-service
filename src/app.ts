@@ -1,11 +1,27 @@
-import fastify, { FastifyRequest, FastifyReply } from 'fastify';
+import fastify, {
+  FastifyRequest,
+  FastifyReply,
+  FastifyInstance,
+} from 'fastify';
 import { fastifySwagger } from 'fastify-swagger';
 import * as path from 'path';
+import pino from 'pino';
+import { IncomingMessage, Server, ServerResponse } from 'http';
 import { userRoutes } from './resources/users/user.router';
 import { boardRoutes } from './resources/boards/board.router';
 import { taskRoutes } from './resources/tasks/task.router';
+import { logger, handleLogging } from './common/utils';
 
-export const server = fastify({ logger: true });
+export const server: FastifyInstance<
+  Server,
+  IncomingMessage,
+  ServerResponse,
+  pino.Logger
+> = fastify({
+  logger,
+});
+
+handleLogging(server);
 
 server.register(userRoutes);
 server.register(boardRoutes);
@@ -20,19 +36,6 @@ server.register(fastifySwagger, {
   },
 });
 
-/**
- * Handle main route and send message to front side if url === '/' or wrong message if url !== '/'
- * @param req - request to server from front side FastifyRequest.
- * @param reply - response from server to front side FastifyReply.
- * @returns void
- */
-
-const mainRoute = (req: FastifyRequest, reply: FastifyReply) => {
-  if (req.url === '/') {
-    reply.send('Service is running!');
-  } else {
-    reply.send('Something went wrong');
-  }
-};
-
-server.get('/', mainRoute);
+server.get('/', (_: FastifyRequest, reply: FastifyReply) => {
+  reply.send('Service is running!');
+});

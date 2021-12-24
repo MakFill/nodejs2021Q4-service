@@ -6,7 +6,7 @@ const db: IBoardResBody[] = [];
 export const boardsRepo = {
   /**
    * Get all boards from DB.
-   * @returns Array of boards Promise\<IUserResBody[]\>.
+   * @returns Array of boards Promise\<IBoardResBody[]\>.
    */
 
   getAll: async () => db,
