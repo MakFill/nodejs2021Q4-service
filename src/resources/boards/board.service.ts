@@ -1,8 +1,9 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
 import { IBoardReqParam, IBoardReqBody } from '../interfaces';
-import { statusCodes } from '../utils';
+import { statusCodes } from '../../common/utils';
 import { boardsRepo } from './board.memory.repository';
 import { Board } from './board.model';
+import { server } from '../../app';
 
 /**
  * Async get all boards from DB and sent them to front side.
@@ -14,6 +15,7 @@ import { Board } from './board.model';
 export const getAllBoards = async (_: FastifyRequest, reply: FastifyReply) => {
   const boards = await boardsRepo.getAll();
   reply.send(boards);
+  server.log.info('Get all Boards from DB');
 };
 
 /**
@@ -27,9 +29,11 @@ export const getBoard = async (req: FastifyRequest, reply: FastifyReply) => {
   const { boardId } = req.params as IBoardReqParam;
   const board = await boardsRepo.getOne(boardId);
   if (!board) {
-    reply.code(statusCodes.NOT_FOUND).send('Board not found');
+    reply.code(statusCodes.NOT_FOUND).send(`Board ${boardId} not found`);
+    server.log.warn(`Board ${boardId} not found`);
   } else {
     reply.send(board);
+    server.log.info(`Get Board ${boardId} from DB`);
   }
 };
 
@@ -44,6 +48,7 @@ export const addBoard = async (req: FastifyRequest, reply: FastifyReply) => {
   const newBoard = new Board(req.body as IBoardReqBody);
   const board = await boardsRepo.add(newBoard);
   reply.code(statusCodes.ADDED).send(board);
+  server.log.info('Board added to DB');
 };
 
 /**
@@ -57,9 +62,11 @@ export const removeBoard = async (req: FastifyRequest, reply: FastifyReply) => {
   const { boardId } = req.params as IBoardReqParam;
   const boardIndex = await boardsRepo.remove(boardId);
   if (boardIndex < 0) {
-    reply.code(statusCodes.NOT_FOUND).send('Board not found');
+    reply.code(statusCodes.NOT_FOUND).send(`Board ${boardId} not found`);
+    server.log.warn(`Board ${boardId} not found and doesn't removed from DB`);
   } else {
     reply.code(statusCodes.DELETED);
+    server.log.info(`Board ${boardId} removed from DB`);
   }
 };
 
@@ -75,8 +82,10 @@ export const updateBoard = async (req: FastifyRequest, reply: FastifyReply) => {
   const newBoard = new Board(req.body as IBoardReqBody);
   const board = await boardsRepo.update(boardId, newBoard);
   if (!board) {
-    reply.code(statusCodes.NOT_FOUND).send('Board not found');
+    reply.code(statusCodes.NOT_FOUND).send(`Board ${boardId} not found`);
+    server.log.warn(`Board ${boardId} not found and doesn't updated`);
   } else {
     reply.send(board);
+    server.log.info(`Board ${boardId} updated`);
   }
 };
