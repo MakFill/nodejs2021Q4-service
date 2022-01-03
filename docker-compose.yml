@@ -20,7 +20,7 @@ services:
   postgres:
     image: makfill/postgres
     container_name: postgres-db
-    build: ./database/
+    build: ./database
     env_file: .env
     ports:
       - ${POSTGRES_PORT}:${POSTGRES_PORT}
@@ -30,8 +30,9 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
+      PGDATA: ${PGDATA}
     volumes:
-      - ./database:/var/lib/postgresql/data/pg-db
+      - ./database/db:/var/lib/postgresql/data/data-db
     restart: always
 networks:
   net:
