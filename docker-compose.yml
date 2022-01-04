@@ -4,7 +4,11 @@ services:
   node:
     image: makfill/fastify
     container_name: fastify-service
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - PORT=${PORT}
     env_file: .env
     volumes:
       - ./logs:/app/logs/
@@ -20,7 +24,11 @@ services:
   postgres:
     image: makfill/postgres
     container_name: postgres-db
-    build: ./database
+    build:
+      context: ./database
+      dockerfile: Dockerfile
+      args:
+        - PORT=${POSTGRES_PORT}
     env_file: .env
     ports:
       - ${POSTGRES_PORT}:${POSTGRES_PORT}

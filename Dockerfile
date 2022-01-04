@@ -24,7 +24,9 @@ COPY --from=dependencies app/node_modules ./node_modules/
 
 COPY --from=src app/ .
 
-EXPOSE ${PORT}
+ARG PORT
+
+EXPOSE $PORT
 
 VOLUME [ "/app/logs" ]
 
