@@ -70,3 +70,22 @@ npm run lint
 Press <kbd>F5</kbd> to debug.
 
 For more information, visit: https://code.visualstudio.com/docs/editor/debugging
+
+### Launch with Docker
+
+Application starts on localhost:4000
+
+For launch Docker container - enter to terminal:
+
+```
+docker-compose build
+docker-compose up
+```
+
+If you've made changes into Docker image - enter to terminal
+
+```
+docker-compose down
+docker-compose build
+docker-compose up
+```
