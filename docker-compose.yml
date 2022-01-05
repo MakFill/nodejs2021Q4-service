@@ -1,0 +1,50 @@
+version: '3.9'
+
+services:
+  node:
+    image: makfill/fastify
+    container_name: fastify-service
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - PORT=${PORT}
+    env_file: .env
+    volumes:
+      - logs:/app/logs
+      - ./src:/app/src
+      - /app/node_modules
+    ports:
+      - ${PORT}:${PORT}
+    networks:
+      - net
+    restart: always
+    depends_on:
+      - postgres
+  postgres:
+    image: makfill/postgres
+    container_name: postgres-db
+    build:
+      context: ./database
+      dockerfile: Dockerfile
+      args:
+        - PORT=${POSTGRES_PORT}
+    env_file: .env
+    ports:
+      - ${POSTGRES_PORT}:${POSTGRES_PORT}
+    networks:
+      - net
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      PGDATA: ${PGDATA}
+    volumes:
+      - db:/var/lib/postgresql/data/data-db
+    restart: always
+networks:
+  net:
+    driver: bridge
+volumes:
+  logs:
+  db:

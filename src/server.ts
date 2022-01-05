@@ -13,4 +13,4 @@ const appRunLogging = (err: Error) => {
   }
 };
 
-server.listen(PORT || 4000, appRunLogging);
+server.listen(PORT ?? 4000, '0.0.0.0', appRunLogging);

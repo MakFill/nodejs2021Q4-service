@@ -7,7 +7,7 @@ import { LOGGER_LVL } from '../config';
 const pinoPrettySettings = {
   ignore: 'pid,hostname',
   colorize: false,
-  translateTime: 'SYS:dd/mm/yyyy HH:MM:ss',
+  translateTime: 'UTC:yyyy/mm/dd h:MM:ss TT Z p',
 };
 
 export const logger = pino({
@@ -28,7 +28,8 @@ export const logger = pino({
         level: 'error',
         target: 'pino-pretty',
         options: {
-          destination: path.join(__dirname, '../../../errors.log'),
+          destination: path.join(__dirname, '../../../logs/errors.log'),
+          mkdir: true,
           ...pinoPrettySettings,
         },
       },
@@ -36,7 +37,8 @@ export const logger = pino({
         level: loggingLevel(LOGGER_LVL),
         target: 'pino-pretty',
         options: {
-          destination: path.join(__dirname, '../../../combined.log'),
+          destination: path.join(__dirname, '../../../logs/combined.log'),
+          mkdir: true,
           ...pinoPrettySettings,
         },
       },
