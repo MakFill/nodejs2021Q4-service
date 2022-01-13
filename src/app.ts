@@ -7,10 +7,12 @@ import { fastifySwagger } from 'fastify-swagger';
 import * as path from 'path';
 import pino from 'pino';
 import { IncomingMessage, Server, ServerResponse } from 'http';
+import 'reflect-metadata';
 import { userRoutes } from './resources/users/user.router';
 import { boardRoutes } from './resources/boards/board.router';
 import { taskRoutes } from './resources/tasks/task.router';
 import { logger, handleLogging } from './common/utils';
+import { pgConnect } from './db/pg-connect';
 
 export const server: FastifyInstance<
   Server,
@@ -23,9 +25,11 @@ export const server: FastifyInstance<
 
 handleLogging(server);
 
+server.register(pgConnect);
 server.register(userRoutes);
 server.register(boardRoutes);
 server.register(taskRoutes);
+
 server.register(fastifySwagger, {
   exposeRoute: true,
   routePrefix: '/doc',
