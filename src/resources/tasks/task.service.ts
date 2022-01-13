@@ -1,7 +1,8 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
-import { Task } from './task.model';
-import { ITaskReqBody, ITaskReqParam, ITaskResBody } from '../interfaces';
-import { tasksRepo } from './task.memory.repository';
+import { getConnection } from 'typeorm';
+import { TaskEntity } from './task.model';
+import { ITaskReqParam } from '../interfaces';
+import { TaskRepo } from './task.memory.repository';
 import { statusCodes } from '../../common/utils';
 import { server } from '../../app';
 
@@ -13,9 +14,9 @@ import { server } from '../../app';
  */
 
 export const getAllTasks = async (req: FastifyRequest, reply: FastifyReply) => {
+  const tasksRepo = getConnection().getCustomRepository(TaskRepo);
   const { boardId } = req.params as ITaskReqParam;
   const tasks = await tasksRepo.getAll(boardId);
-
   if (tasks === null) {
     reply.code(statusCodes.NOT_FOUND).send('Board not found');
     server.log.warn(`Board ${boardId} not found`);
@@ -33,9 +34,10 @@ export const getAllTasks = async (req: FastifyRequest, reply: FastifyReply) => {
  */
 
 export const getTask = async (req: FastifyRequest, reply: FastifyReply) => {
+  const tasksRepo = getConnection().getCustomRepository(TaskRepo);
   const { taskId, boardId } = req.params as ITaskReqParam;
   const task = await tasksRepo.getOne(boardId, taskId);
-  if (task === null) {
+  if (!task) {
     reply
       .code(statusCodes.NOT_FOUND)
       .send(`Task ${taskId} and/or Board ${boardId} not found`);
@@ -54,10 +56,10 @@ export const getTask = async (req: FastifyRequest, reply: FastifyReply) => {
  */
 
 export const addTask = async (req: FastifyRequest, reply: FastifyReply) => {
+  const tasksRepo = getConnection().getCustomRepository(TaskRepo);
   const { boardId } = req.params as ITaskReqParam;
-  const newTask: ITaskResBody = new Task(req.body as ITaskReqBody);
-  const task = await tasksRepo.add(boardId, newTask);
-  if (task === null) {
+  const task = await tasksRepo.add(boardId, req.body as Partial<TaskEntity>);
+  if (!task) {
     reply.code(statusCodes.NOT_FOUND).send(`Board ${boardId} not found`);
     server.log.warn(`Board ${boardId} not found`);
   } else {
@@ -74,9 +76,10 @@ export const addTask = async (req: FastifyRequest, reply: FastifyReply) => {
  */
 
 export const removeTask = async (req: FastifyRequest, reply: FastifyReply) => {
+  const tasksRepo = getConnection().getCustomRepository(TaskRepo);
   const { taskId, boardId } = req.params as ITaskReqParam;
-  const taskIndex = await tasksRepo.remove(taskId, boardId);
-  if (taskIndex === null) {
+  const task = await tasksRepo.removeTask(taskId, boardId);
+  if (!task.affected) {
     reply
       .code(statusCodes.NOT_FOUND)
       .send(`Task ${taskId} and/or Board ${boardId} not found`);
@@ -95,10 +98,14 @@ export const removeTask = async (req: FastifyRequest, reply: FastifyReply) => {
  */
 
 export const updateTask = async (req: FastifyRequest, reply: FastifyReply) => {
+  const tasksRepo = getConnection().getCustomRepository(TaskRepo);
   const { taskId, boardId } = req.params as ITaskReqParam;
-  const newTask = new Task(req.body as ITaskReqBody);
-  const task = await tasksRepo.update(taskId, boardId, newTask);
-  if (task === null) {
+  const task = await tasksRepo.updateTask(
+    taskId,
+    boardId,
+    req.body as Partial<TaskEntity>
+  );
+  if (!task) {
     reply
       .code(statusCodes.NOT_FOUND)
       .send(`Task ${taskId} and/or Board ${boardId} not found`);

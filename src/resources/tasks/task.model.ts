@@ -1,34 +1,26 @@
-import { v4 as uuid } from 'uuid';
-import { ITaskReqBody } from '../interfaces';
+import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { ITaskResBody } from '../interfaces';
 
-export class Task {
-  id;
+@Entity()
+export class TaskEntity implements ITaskResBody {
+  @PrimaryGeneratedColumn('uuid')
+  id!: string;
 
-  title;
+  @Column()
+  title!: string;
 
-  order;
+  @Column()
+  order!: number;
 
-  description;
+  @Column()
+  description!: string;
 
-  userId;
+  @Column('varchar', { nullable: true })
+  userId!: string | null;
 
-  boardId: string;
+  @Column()
+  boardId!: string;
 
-  columnId;
-
-  /**
-   * Create new task by object with type ITaskReqBody and generate id by uuid v4.
-   * @param taskFromFE - task object ITaskReqBody.
-   * @returns task object with id === uuid v4 ITaskResBody.
-   */
-
-  constructor(taskFromFE: ITaskReqBody) {
-    this.id = uuid();
-    this.title = taskFromFE.title;
-    this.order = taskFromFE.order;
-    this.description = taskFromFE.description;
-    this.userId = taskFromFE.userId;
-    this.boardId = taskFromFE.boardId;
-    this.columnId = taskFromFE.columnId;
-  }
+  @Column('varchar', { nullable: true })
+  columnId!: string | null;
 }
