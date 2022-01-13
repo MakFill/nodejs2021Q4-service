@@ -1,65 +1,50 @@
-import { IUserResBody } from '../interfaces';
-import { setUsersIdToNull } from '../tasks/task.memory.repository';
+import { EntityRepository, getConnection, Repository } from 'typeorm';
+import { TaskEntity } from '../tasks/task.model';
+import { UserEntity } from './user.model';
 
-const db: IUserResBody[] = [];
+@EntityRepository(UserEntity)
+export class UserRepo extends Repository<UserEntity> {
+  async getAll() {
+    return this.createQueryBuilder().getMany();
+  }
 
-export const usersRepo = {
-  /**
-   * Get all users from DB.
-   * @returns Array of users Promise\<IUserResBody[]\>.
-   */
+  async getOne(id: UserEntity['id']) {
+    return this.createQueryBuilder('user')
+      .where('user.id = :id', { id })
+      .getOne();
+  }
 
-  getAll: async () => db,
+  async add(user: Partial<UserEntity>) {
+    const { identifiers } = await this.createQueryBuilder()
+      .insert()
+      .into(UserEntity)
+      .values([user])
+      .execute();
 
-  /**
-   * Get one user from DB by id.
-   * @param id - user id IUserResBody['id'] or string.
-   * @returns one user by id or undefined Promise \<IUserResBody | undefined\>.
-   */
+    return this.getOne(identifiers[0]?.id);
+  }
 
-  getOne: async (id: IUserResBody['id']) => {
-    const item = db.find((elem) => elem.id === id);
-    return item;
-  },
+  async removeUser(id: UserEntity['id']) {
+    await getConnection()
+      .createQueryBuilder()
+      .update(TaskEntity)
+      .set({ userId: null })
+      .where('userId = :id', { id })
+      .execute();
 
-  /**
-   * Add user to DB.
-   * @param user - user object IUserResBody.
-   * @returns added user Promise\<IUserResBody\>.
-   */
+    return this.createQueryBuilder()
+      .delete()
+      .from(UserEntity)
+      .where('id = :id', { id })
+      .execute();
+  }
 
-  add: async (user: IUserResBody) => {
-    db.push(user);
-    return user;
-  },
-
-  /**
-   * Remove user from DB and set userId to null in the each task assigned to user.
-   * @param id - user id IUserResBody['id'] or string.
-   * @returns index of the deleted user in the DB Promise\<number\>.
-   */
-
-  remove: async (id: IUserResBody['id']) => {
-    const index = db.findIndex((user) => user.id === id);
-
-    setUsersIdToNull(id);
-    db.splice(index, 1);
-    return index;
-  },
-
-  /**
-   * Update user in the DB.
-   * @param id - user id IUserResBody['id'] or string.
-   * @param user - user object IUserResBody.
-   * @returns updated user object or null Promise\<IUserResBody | null\>.
-   */
-
-  update: async (id: IUserResBody['id'], user: IUserResBody) => {
-    const index = db.findIndex((el) => el.id === id);
-    if (index < 0) {
-      return null;
-    }
-    db[index] = { ...user, id };
-    return { ...user, id };
-  },
-};
+  async updateUser(id: UserEntity['id'], user: Partial<UserEntity>) {
+    await this.createQueryBuilder()
+      .update(UserEntity)
+      .set(user)
+      .where('id = :id', { id })
+      .execute();
+    return this.getOne(id);
+  }
+}
