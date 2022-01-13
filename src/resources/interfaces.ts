@@ -1,3 +1,5 @@
+import { IColumn } from './boards/column.model';
+
 export interface IUserResBody {
   id: string;
   name: string;
@@ -5,21 +7,11 @@ export interface IUserResBody {
   password: string;
 }
 
-export type IUserReqBody = Omit<IUserResBody, 'id'>;
-
-export interface IColumn {
-  id: string;
-  title: string;
-  order: number;
-}
-
 export interface IBoardResBody {
   id: string;
   title: string;
   columns: IColumn[];
 }
-
-export type IBoardReqBody = Omit<IBoardResBody, 'id'>;
 
 export interface ITaskResBody {
   id: string;
@@ -30,8 +22,6 @@ export interface ITaskResBody {
   boardId: string;
   columnId: string | null;
 }
-
-export type ITaskReqBody = Omit<ITaskResBody, 'id'>;
 
 export interface IUserReqParam {
   userId: string;
