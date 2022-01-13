@@ -10,6 +10,8 @@ services:
       args:
         - PORT=${PORT}
     env_file: .env
+    environment:
+      POSTGRES_HOST: ${POSTGRES_HOST_DOCKER}
     volumes:
       - logs:/app/logs
       - ./src:/app/src
@@ -38,9 +40,10 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
-      PGDATA: ${PGDATA}
+      POSTGRES_HOST: ${POSTGRES_HOST_DOCKER}
+      PG_DATA: ${PG_DATA}
     volumes:
-      - db:/var/lib/postgresql/data/data-db
+      - db:/var/lib/postgresql/data
     restart: always
 networks:
   net:

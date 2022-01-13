@@ -7,6 +7,12 @@ declare global {
       JWT_SECRET_KEY: string;
       MONGO_CONNECTION_STRING: string;
       LOGGER_LVL: string;
+      POSTGRES_PORT: number;
+      POSTGRES_USER: string;
+      POSTGRES_PASSWORD: string;
+      POSTGRES_DB: string;
+      POSTGRES_HOST: string;
+      POSTGRES_HOST_DOCKER: string;
     }
   }
 }
