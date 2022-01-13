@@ -1,9 +1,12 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
-import { IBoardReqParam, IBoardReqBody } from '../interfaces';
+import { getConnection } from 'typeorm';
+// import { BoardEntity } from './board.model';
+import { ColumnEntity } from './column.model';
+import { IBoardReqParam } from '../interfaces';
 import { statusCodes } from '../../common/utils';
-import { boardsRepo } from './board.memory.repository';
-import { Board } from './board.model';
+import { BoardRepo } from './board.memory.repository';
 import { server } from '../../app';
+import { BoardEntity } from '..';
 
 /**
  * Async get all boards from DB and sent them to front side.
@@ -13,9 +16,17 @@ import { server } from '../../app';
  */
 
 export const getAllBoards = async (_: FastifyRequest, reply: FastifyReply) => {
+  const boardsRepo = getConnection().getCustomRepository(BoardRepo);
   const boards = await boardsRepo.getAll();
   reply.send(boards);
   server.log.info('Get all Boards from DB');
+};
+
+export const getAllColumns = async (_: FastifyRequest, reply: FastifyReply) => {
+  const repo = getConnection().manager.getRepository(ColumnEntity);
+  const columns = await repo.find();
+  reply.send(columns);
+  server.log.info('Get all Columns from DB');
 };
 
 /**
@@ -26,6 +37,7 @@ export const getAllBoards = async (_: FastifyRequest, reply: FastifyReply) => {
  */
 
 export const getBoard = async (req: FastifyRequest, reply: FastifyReply) => {
+  const boardsRepo = getConnection().getCustomRepository(BoardRepo);
   const { boardId } = req.params as IBoardReqParam;
   const board = await boardsRepo.getOne(boardId);
   if (!board) {
@@ -45,8 +57,8 @@ export const getBoard = async (req: FastifyRequest, reply: FastifyReply) => {
  */
 
 export const addBoard = async (req: FastifyRequest, reply: FastifyReply) => {
-  const newBoard = new Board(req.body as IBoardReqBody);
-  const board = await boardsRepo.add(newBoard);
+  const boardsRepo = getConnection().getCustomRepository(BoardRepo);
+  const board = await boardsRepo.add(req.body as Partial<BoardEntity>);
   reply.code(statusCodes.ADDED).send(board);
   server.log.info('Board added to DB');
 };
@@ -59,9 +71,10 @@ export const addBoard = async (req: FastifyRequest, reply: FastifyReply) => {
  */
 
 export const removeBoard = async (req: FastifyRequest, reply: FastifyReply) => {
+  const boardsRepo = getConnection().getCustomRepository(BoardRepo);
   const { boardId } = req.params as IBoardReqParam;
-  const boardIndex = await boardsRepo.remove(boardId);
-  if (boardIndex < 0) {
+  const boardIndex = await boardsRepo.removeBoard(boardId);
+  if (!boardIndex.affected) {
     reply.code(statusCodes.NOT_FOUND).send(`Board ${boardId} not found`);
     server.log.warn(`Board ${boardId} not found and doesn't removed from DB`);
   } else {
@@ -78,9 +91,12 @@ export const removeBoard = async (req: FastifyRequest, reply: FastifyReply) => {
  */
 
 export const updateBoard = async (req: FastifyRequest, reply: FastifyReply) => {
+  const boardsRepo = getConnection().getCustomRepository(BoardRepo);
   const { boardId } = req.params as IBoardReqParam;
-  const newBoard = new Board(req.body as IBoardReqBody);
-  const board = await boardsRepo.update(boardId, newBoard);
+  const board = await boardsRepo.updateBoard(
+    boardId,
+    req.body as Partial<BoardEntity>
+  );
   if (!board) {
     reply.code(statusCodes.NOT_FOUND).send(`Board ${boardId} not found`);
     server.log.warn(`Board ${boardId} not found and doesn't updated`);

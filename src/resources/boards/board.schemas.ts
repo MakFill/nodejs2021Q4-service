@@ -4,7 +4,17 @@ import {
   updateBoard,
   addBoard,
   removeBoard,
+  getAllColumns,
 } from './board.service';
+
+const Column = {
+  type: 'object',
+  properties: {
+    id: { type: 'string' },
+    title: { type: 'string' },
+    order: { type: 'number' },
+  },
+};
 
 const Board = {
   type: 'object',
@@ -13,14 +23,7 @@ const Board = {
     title: { type: 'string' },
     columns: {
       type: 'array',
-      items: {
-        type: 'object',
-        properties: {
-          id: { type: 'string' },
-          title: { type: 'string' },
-          order: { type: 'number' },
-        },
-      },
+      items: Column,
     },
   },
 };
@@ -32,13 +35,7 @@ const BoardBody = {
     title: { type: 'string' },
     columns: {
       type: 'array',
-      items: {
-        type: 'object',
-        properties: {
-          title: { type: 'string' },
-          order: { type: 'number' },
-        },
-      },
+      items: Column,
     },
   },
 };
@@ -53,6 +50,18 @@ export const getBoardsOpts = {
     },
   },
   handler: getAllBoards,
+};
+
+export const getColumnssOpts = {
+  schema: {
+    response: {
+      200: {
+        type: 'array',
+        items: Column,
+      },
+    },
+  },
+  handler: getAllColumns,
 };
 
 export const getBoardOpts = {

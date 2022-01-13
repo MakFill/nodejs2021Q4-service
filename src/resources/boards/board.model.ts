@@ -1,22 +1,15 @@
-import { v4 as uuid } from 'uuid';
-import { IBoardReqBody, IColumn } from '../interfaces';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { IBoardResBody } from '../interfaces';
+import { ColumnEntity } from './column.model';
 
-export class Board {
-  public id;
+@Entity()
+export class BoardEntity implements IBoardResBody {
+  @PrimaryGeneratedColumn('uuid')
+  id!: string;
 
-  public title;
+  @Column()
+  title!: string;
 
-  public columns: IColumn[];
-
-  /**
-   * Create new board by title and columns and generate id by uuid v4.
-   * @param boardFromFE - board object IBoardReqBody.
-   * @returns board object with id === uuid v4 IBoardResBody.
-   */
-
-  constructor(boardFromFE: IBoardReqBody) {
-    this.id = uuid();
-    this.title = boardFromFE.title;
-    this.columns = boardFromFE.columns;
-  }
+  @OneToMany(() => ColumnEntity, (column) => column.board)
+  columns!: ColumnEntity[];
 }

@@ -1,75 +1,83 @@
-import { IBoardResBody, ITaskResBody } from '../interfaces';
-import { removeBoardTasks } from '../tasks/task.memory.repository';
+import { EntityRepository, Repository, getConnection } from 'typeorm';
+import { TaskEntity } from '../tasks/task.model';
+import { ColumnEntity } from './column.model';
+import { BoardEntity } from './board.model';
 
-const db: IBoardResBody[] = [];
+@EntityRepository(BoardEntity)
+export class BoardRepo extends Repository<BoardEntity> {
+  async getAll() {
+    return this.createQueryBuilder('board')
+      .leftJoinAndSelect('board.columns', 'column')
+      .getMany();
+  }
 
-export const boardsRepo = {
-  /**
-   * Get all boards from DB.
-   * @returns Array of boards Promise\<IBoardResBody[]\>.
-   */
+  async getOne(id: BoardEntity['id']) {
+    return this.createQueryBuilder('board')
+      .leftJoinAndSelect('board.columns', 'column')
+      .where('board.id = :id', { id })
+      .getOne();
+  }
 
-  getAll: async () => db,
+  async add(board: Partial<BoardEntity>) {
+    return this._changeBoard(board);
+  }
 
-  /**
-   * Get one board from DB by id.
-   * @param id - board id IBoardResBody['id'] or string.
-   * @returns one board by id or undefined Promise \<IBoardResBody  | undefined\>.
-   */
+  async removeBoard(id: BoardEntity['id']) {
+    await getConnection()
+      .createQueryBuilder()
+      .delete()
+      .from(TaskEntity)
+      .where('boardId = :id', { id })
+      .execute();
 
-  getOne: async (id: IBoardResBody['id']) => {
-    const item = db.find((elem) => elem.id === id);
-    return item;
-  },
+    await getConnection()
+      .createQueryBuilder()
+      .delete()
+      .from(ColumnEntity)
+      .where('boardId = :id', { id })
+      .execute();
 
-  /**
-   * Add board to DB.
-   * @param user - board object IBoardResBody.
-   * @returns added board Promise\<IBoardResBody\>.
-   */
+    return this.createQueryBuilder()
+      .delete()
+      .from(BoardEntity)
+      .where('id = :id', { id })
+      .execute();
+  }
 
-  add: async (board: IBoardResBody) => {
-    db.push(board);
-    return board;
-  },
+  async updateBoard(id: BoardEntity['id'], board: Partial<BoardEntity>) {
+    await this.removeBoard(id);
+    return this._changeBoard(board, id);
+  }
 
-  /**
-   * Remove board from DB and remove all tasks assigned to board.
-   * @param id - board id IBoardResBody['id'] or string.
-   * @returns index of the deleted board in the DB Promise\<number\>.
-   */
-
-  remove: async (id: IBoardResBody['id']) => {
-    const index = db.findIndex((board) => board.id === id);
-    removeBoardTasks(id);
-    db.splice(index, 1);
-    return index;
-  },
-
-  /**
-   * Update board in the DB.
-   * @param id - board id IBoardResBody['id'] or string.
-   * @param user - board object IBoardResBody.
-   * @returns updated board object or null Promise\<IBoardResBody | null\>.
-   */
-
-  update: async (id: IBoardResBody['id'], board: IBoardResBody) => {
-    const index = db.findIndex((el) => el.id === id);
-    if (index < 0) {
-      return null;
+  async _changeBoard(board: Partial<BoardEntity>, id?: BoardEntity['id']) {
+    let boardId: string;
+    if (!id) {
+      boardId = (await this.save(board)).id;
+    } else {
+      await this.save({ ...board, id });
+      boardId = id;
     }
-    db[index] = { ...board, id };
-    return db[index];
-  },
-};
 
-/**
- * Check is board with id exist.
- * @param id - board id ITaskResBody['boardId'] or string.
- * @returns is board exist boolean.
- */
+    if (board.columns) {
+      const items = board.columns.map((item: Partial<ColumnEntity>) => {
+        const model = new ColumnEntity();
+        model.order = item.order ?? 1;
+        model.title = item.title ?? '';
+        if (item.id) {
+          model.id = item.id;
+        }
+        model.board = { ...board, id: boardId } as BoardEntity;
+        return model;
+      });
 
-export const checkIsBoardExist = (id: ITaskResBody['boardId']) => {
-  const isBoardExist = db.some((elem) => elem.id === id);
-  return isBoardExist;
-};
+      await getConnection()
+        .createQueryBuilder()
+        .insert()
+        .into(ColumnEntity)
+        .values([...items])
+        .execute();
+    }
+
+    return this.getOne(boardId);
+  }
+}

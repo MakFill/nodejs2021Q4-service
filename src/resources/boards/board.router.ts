@@ -5,6 +5,7 @@ import {
   postBoardOpts,
   deleteBoardOpts,
   putBoardOpts,
+  getColumnssOpts,
 } from './board.schemas';
 
 /**
@@ -21,6 +22,8 @@ export function boardRoutes(
   done: CallableFunction
 ) {
   fastify.get('/boards', getBoardsOpts);
+
+  fastify.get('/columns', getColumnssOpts);
 
   fastify.get('/boards/:boardId', getBoardOpts);
 
