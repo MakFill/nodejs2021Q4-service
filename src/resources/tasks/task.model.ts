@@ -1,4 +1,11 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
+import { UserEntity } from '../users/user.model';
 import { ITaskResBody } from '../interfaces';
 
 @Entity()
@@ -23,4 +30,8 @@ export class TaskEntity implements ITaskResBody {
 
   @Column('varchar', { nullable: true })
   columnId!: string | null;
+
+  @ManyToOne(() => UserEntity, (user) => user.tasks, { onDelete: 'SET NULL' })
+  @JoinColumn({ name: 'userId', referencedColumnName: 'id' })
+  user!: UserEntity;
 }

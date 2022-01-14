@@ -1,5 +1,4 @@
-import { EntityRepository, getConnection, Repository } from 'typeorm';
-import { TaskEntity } from '../tasks/task.model';
+import { EntityRepository, Repository } from 'typeorm';
 import { UserEntity } from './user.model';
 
 @EntityRepository(UserEntity)
@@ -25,13 +24,6 @@ export class UserRepo extends Repository<UserEntity> {
   }
 
   async removeUser(id: UserEntity['id']) {
-    await getConnection()
-      .createQueryBuilder()
-      .update(TaskEntity)
-      .set({ userId: null })
-      .where('userId = :id', { id })
-      .execute();
-
     return this.createQueryBuilder()
       .delete()
       .from(UserEntity)
