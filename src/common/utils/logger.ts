@@ -1,6 +1,7 @@
 import { FastifyInstance } from 'fastify';
 import pino from 'pino';
 import * as path from 'path';
+import { QueryFailedError } from 'typeorm';
 import { statusCodes, loggingLevel } from './index';
 import { LOGGER_LVL } from '../config';
 
@@ -74,6 +75,14 @@ export const handleLogging = (server: FastifyInstance) => {
       logger.warn(err);
       reply.status(statusCodes.NOT_FOUND).send({
         message: `${err.validation[0].dataPath} ${err.validation[0].message}`,
+      });
+    } else if (
+      err instanceof QueryFailedError &&
+      (err as QueryFailedError).driverError.routine === 'string_to_uuid'
+    ) {
+      logger.warn(err);
+      reply.status(statusCodes.BAD_REQUEST).send({
+        message: (err as QueryFailedError).message,
       });
     } else {
       logger.error(err);
