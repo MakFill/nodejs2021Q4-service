@@ -1,0 +1,9 @@
+npm-debug.log
+*.log
+.vscode
+.git
+.github
+.env
+**/node_modules
+logs
+**/build
