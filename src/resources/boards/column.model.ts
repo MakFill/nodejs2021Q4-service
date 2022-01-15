@@ -1,4 +1,11 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  OneToMany,
+} from 'typeorm';
+import { TaskEntity } from '..';
 import { BoardEntity } from './board.model';
 
 export interface IColumn {
@@ -21,4 +28,7 @@ export class ColumnEntity implements IColumn {
 
   @ManyToOne(() => BoardEntity, (board) => board.columns)
   board!: BoardEntity;
+
+  @OneToMany(() => TaskEntity, (task) => task.column)
+  tasks!: TaskEntity[];
 }

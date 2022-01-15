@@ -5,8 +5,10 @@ import {
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
+import { ColumnEntity } from '../boards/column.model';
 import { UserEntity } from '../users/user.model';
 import { ITaskResBody } from '../interfaces';
+import { BoardEntity } from '../boards/board.model';
 
 @Entity()
 export class TaskEntity implements ITaskResBody {
@@ -34,4 +36,14 @@ export class TaskEntity implements ITaskResBody {
   @ManyToOne(() => UserEntity, (user) => user.tasks, { onDelete: 'SET NULL' })
   @JoinColumn({ name: 'userId', referencedColumnName: 'id' })
   user!: UserEntity;
+
+  @ManyToOne(() => BoardEntity, (board) => board.tasks)
+  @JoinColumn({ name: 'boardId', referencedColumnName: 'id' })
+  board!: BoardEntity;
+
+  @ManyToOne(() => ColumnEntity, (column) => column.tasks, {
+    onDelete: 'SET NULL',
+  })
+  @JoinColumn({ name: 'columnId', referencedColumnName: 'id' })
+  column!: ColumnEntity;
 }
