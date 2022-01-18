@@ -8,30 +8,22 @@ import {
   getColumnssOpts,
 } from './board.schemas';
 
-/**
- * Handle all rotes related to boards.
- * @param fastify - Fastify server instance FastifyInstance.
- * @param _ - in this case unused param for setting Fastify instance options FastifyPluginOptions.
- * @param done - function we would call at the end of the boardRoutes function, to indicate we are done CallableFunction.
- * @returns void
- */
-
 export function boardRoutes(
-  fastify: FastifyInstance,
+  server: FastifyInstance,
   _: FastifyPluginOptions,
   done: CallableFunction
 ) {
-  fastify.get('/boards', getBoardsOpts);
+  server.get('/boards', getBoardsOpts);
 
-  fastify.get('/columns', getColumnssOpts);
+  server.get('/columns', getColumnssOpts);
 
-  fastify.get('/boards/:boardId', getBoardOpts);
+  server.get('/boards/:boardId', getBoardOpts);
 
-  fastify.post('/boards', postBoardOpts);
+  server.post('/boards', postBoardOpts);
 
-  fastify.delete('/boards/:boardId', deleteBoardOpts);
+  server.delete('/boards/:boardId', deleteBoardOpts);
 
-  fastify.put('/boards/:boardId', putBoardOpts);
+  server.put('/boards/:boardId', putBoardOpts);
 
   done();
 }
