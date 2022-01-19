@@ -35,3 +35,8 @@ export interface ITaskReqParam {
 export interface IBoardReqParam {
   boardId: string;
 }
+
+export interface ILoginBody {
+  login: string;
+  password: string;
+}

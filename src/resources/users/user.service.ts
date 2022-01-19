@@ -29,7 +29,7 @@ export const getUser = async (req: FastifyRequest, reply: FastifyReply) => {
 export const addUser = async (req: FastifyRequest, reply: FastifyReply) => {
   const usersRepo = getConnection().getCustomRepository(UserRepo);
   const user: UserEntity | undefined = await usersRepo.add(
-    req.body as Partial<UserEntity>
+    req.body as Omit<UserEntity, 'id' | 'tasks'>
   );
   reply.code(statusCodes.ADDED).send(user);
   server.log.info('User added to DB');
