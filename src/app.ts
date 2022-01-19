@@ -13,6 +13,8 @@ import { boardRoutes } from './resources/boards/board.router';
 import { taskRoutes } from './resources/tasks/task.router';
 import { logger, handleLogging } from './common/utils';
 import { pgConnect } from './db/pg-connect';
+import { loginRoute } from './common/authentication/login.router';
+import { verifyToken } from './common/authentication/checkToken';
 
 export const server: FastifyInstance<
   Server,
@@ -24,7 +26,9 @@ export const server: FastifyInstance<
 });
 
 handleLogging(server);
+verifyToken(server);
 
+server.register(loginRoute);
 server.register(pgConnect);
 server.register(userRoutes);
 server.register(boardRoutes);
