@@ -6,26 +6,12 @@ import { statusCodes } from '../../common/utils';
 import { UserRepo } from './user.memory.repository';
 import { UserEntity } from './user.model';
 
-/**
- * Async get all users from DB and sent them to front side.
- * @param _ - unused param for request from front side FastifyRequest.
- * @param reply - response to front side FastifyReply.
- * @returns void
- */
-
 export const getAllUsers = async (_: FastifyRequest, reply: FastifyReply) => {
   const usersRepo = getConnection().getCustomRepository(UserRepo);
   const users: UserEntity[] = await usersRepo.getAll();
   reply.send(users);
   server.log.info('Get all Users from DB');
 };
-
-/**
- * Async get one user from DB by req.params and sent it to front side.
- * @param req - request from front side FastifyRequest.
- * @param reply - response to front side FastifyReply.
- * @returns void
- */
 
 export const getUser = async (req: FastifyRequest, reply: FastifyReply) => {
   const { userId } = req.params as IUserReqParam;
@@ -40,13 +26,6 @@ export const getUser = async (req: FastifyRequest, reply: FastifyReply) => {
   }
 };
 
-/**
- * Async add one user to DB by req.body and sent it to front side.
- * @param req - request from front side FastifyRequest.
- * @param reply - response to front side FastifyReply.
- * @returns void
- */
-
 export const addUser = async (req: FastifyRequest, reply: FastifyReply) => {
   const usersRepo = getConnection().getCustomRepository(UserRepo);
   const user: UserEntity | undefined = await usersRepo.add(
@@ -55,13 +34,6 @@ export const addUser = async (req: FastifyRequest, reply: FastifyReply) => {
   reply.code(statusCodes.ADDED).send(user);
   server.log.info('User added to DB');
 };
-
-// /**
-//  * Async remove one user from DB by req.params.
-//  * @param req - request from front side FastifyRequest.
-//  * @param reply - response to front side FastifyReply.
-//  * @returns void
-//  */
 
 export const removeUser = async (req: FastifyRequest, reply: FastifyReply) => {
   const usersRepo = getConnection().getCustomRepository(UserRepo);
@@ -75,13 +47,6 @@ export const removeUser = async (req: FastifyRequest, reply: FastifyReply) => {
     server.log.info(`User ${userId} removed from DB`);
   }
 };
-
-// /**
-//  * Async update one user in DB by req.params + req.body and sent it to front side.
-//  * @param req - request from front side FastifyRequest.
-//  * @param reply - response to front side FastifyReply.
-//  * @returns void
-//  */
 
 export const updateUser = async (req: FastifyRequest, reply: FastifyReply) => {
   const usersRepo = getConnection().getCustomRepository(UserRepo);

@@ -1,19 +1,11 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
 import { getConnection } from 'typeorm';
-// import { BoardEntity } from './board.model';
 import { ColumnEntity } from './column.model';
 import { IBoardReqParam } from '../interfaces';
 import { statusCodes } from '../../common/utils';
 import { BoardRepo } from './board.memory.repository';
 import { server } from '../../app';
 import { BoardEntity } from '..';
-
-/**
- * Async get all boards from DB and sent them to front side.
- * @param _ - unused param for request from front side FastifyRequest.
- * @param reply - response to front side FastifyReply.
- * @returns void
- */
 
 export const getAllBoards = async (_: FastifyRequest, reply: FastifyReply) => {
   const boardsRepo = getConnection().getCustomRepository(BoardRepo);
@@ -29,13 +21,6 @@ export const getAllColumns = async (_: FastifyRequest, reply: FastifyReply) => {
   server.log.info('Get all Columns from DB');
 };
 
-/**
- * Async get one board from DB by req.params and sent it to front side.
- * @param req - request from front side FastifyRequest.
- * @param reply - response to front side FastifyReply.
- * @returns void
- */
-
 export const getBoard = async (req: FastifyRequest, reply: FastifyReply) => {
   const boardsRepo = getConnection().getCustomRepository(BoardRepo);
   const { boardId } = req.params as IBoardReqParam;
@@ -49,26 +34,12 @@ export const getBoard = async (req: FastifyRequest, reply: FastifyReply) => {
   }
 };
 
-/**
- * Async add one board to DB by req.body and sent it to front side.
- * @param req - request from front side FastifyRequest.
- * @param reply - response to front side FastifyReply.
- * @returns void
- */
-
 export const addBoard = async (req: FastifyRequest, reply: FastifyReply) => {
   const boardsRepo = getConnection().getCustomRepository(BoardRepo);
   const board = await boardsRepo.add(req.body as Partial<BoardEntity>);
   reply.code(statusCodes.ADDED).send(board);
   server.log.info('Board added to DB');
 };
-
-/**
- * Async remove one board from DB by req.params.
- * @param req - request from front side FastifyRequest.
- * @param reply - response to front side FastifyReply.
- * @returns void
- */
 
 export const removeBoard = async (req: FastifyRequest, reply: FastifyReply) => {
   const boardsRepo = getConnection().getCustomRepository(BoardRepo);
@@ -82,13 +53,6 @@ export const removeBoard = async (req: FastifyRequest, reply: FastifyReply) => {
     server.log.info(`Board ${boardId} removed from DB`);
   }
 };
-
-/**
- * Async update one board in DB by req.params + req.body and sent it to front side.
- * @param req - request from front side FastifyRequest.
- * @param reply - response to front side FastifyReply.
- * @returns void
- */
 
 export const updateBoard = async (req: FastifyRequest, reply: FastifyReply) => {
   const boardsRepo = getConnection().getCustomRepository(BoardRepo);

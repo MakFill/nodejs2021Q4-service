@@ -17,13 +17,6 @@ const checkIsBoardExist = async (id: string, reply: FastifyReply) => {
   return board;
 };
 
-/**
- * Async get all tasks from DB by req.params and sent them to front side.
- * @param req - request from front side FastifyRequest.
- * @param reply - response to front side FastifyReply.
- * @returns void
- */
-
 export const getAllTasks = async (req: FastifyRequest, reply: FastifyReply) => {
   const { boardId } = req.params as ITaskReqParam;
   const board = await checkIsBoardExist(boardId, reply);
@@ -34,13 +27,6 @@ export const getAllTasks = async (req: FastifyRequest, reply: FastifyReply) => {
     server.log.info('Get all tasks from DB');
   }
 };
-
-/**
- * Async get one task from DB by req.params and sent it to front side.
- * @param req - request from front side FastifyRequest.
- * @param reply - response to front side FastifyReply.
- * @returns void
- */
 
 export const getTask = async (req: FastifyRequest, reply: FastifyReply) => {
   const { taskId, boardId } = req.params as ITaskReqParam;
@@ -58,13 +44,6 @@ export const getTask = async (req: FastifyRequest, reply: FastifyReply) => {
   }
 };
 
-/**
- * Async add one task to DB by req.body and by req.params and sent it to front side.
- * @param req - request from front side FastifyRequest.
- * @param reply - response to front side FastifyReply.
- * @returns void
- */
-
 export const addTask = async (req: FastifyRequest, reply: FastifyReply) => {
   const { boardId } = req.params as ITaskReqParam;
   const board = await checkIsBoardExist(boardId, reply);
@@ -75,13 +54,6 @@ export const addTask = async (req: FastifyRequest, reply: FastifyReply) => {
     server.log.info('Task added to DB');
   }
 };
-
-/**
- * Async remove one task from DB by req.params.
- * @param req - request from front side FastifyRequest.
- * @param reply - response to front side FastifyReply.
- * @returns void
- */
 
 export const removeTask = async (req: FastifyRequest, reply: FastifyReply) => {
   const { taskId, boardId } = req.params as ITaskReqParam;
@@ -98,13 +70,6 @@ export const removeTask = async (req: FastifyRequest, reply: FastifyReply) => {
     }
   }
 };
-
-/**
- * Async update one task in DB by req.params + req.body and sent it to front side.
- * @param req - request from front side FastifyRequest.
- * @param reply - response to front side FastifyReply.
- * @returns void
- */
 
 export const updateTask = async (req: FastifyRequest, reply: FastifyReply) => {
   const { taskId, boardId } = req.params as ITaskReqParam;
