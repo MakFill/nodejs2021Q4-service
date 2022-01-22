@@ -7,7 +7,6 @@ dotenv.config({
 
 export const {
   NODE_ENV,
-  MONGO_CONNECTION_STRING,
   JWT_SECRET_KEY,
   PORT,
   AUTH_MODE,

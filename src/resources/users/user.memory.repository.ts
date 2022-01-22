@@ -1,4 +1,6 @@
 import { EntityRepository, Repository } from 'typeorm';
+import { hashCreate } from '../../common/utils';
+import { ILoginBody } from '../interfaces';
 import { UserEntity } from './user.model';
 
 @EntityRepository(UserEntity)
@@ -13,11 +15,18 @@ export class UserRepo extends Repository<UserEntity> {
       .getOne();
   }
 
-  async add(user: Partial<UserEntity>) {
+  async getUserByLogin(login: ILoginBody['login']) {
+    return this.createQueryBuilder('user')
+      .where('user.login = :login', { login })
+      .getOne();
+  }
+
+  async add(user: Omit<UserEntity, 'id' | 'tasks'>) {
+    const hashPassword = await hashCreate(user.password);
     const { identifiers } = await this.createQueryBuilder()
       .insert()
       .into(UserEntity)
-      .values([user])
+      .values([{ ...user, password: hashPassword }])
       .execute();
 
     return this.getOne(identifiers[0]?.id);
