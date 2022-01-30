@@ -1,0 +1,62 @@
+config:
+  target: 'http://localhost:4000'
+  http:
+    timeout: 10
+  phases:
+    - duration: 10
+      arrivalRate: 10
+before:
+  flow:
+    - log: 'Get token'
+    - post:
+        url: '/login'
+        json:
+          login: 'admin'
+          password: 'admin'
+        capture:
+          - json: $.token
+            as: token
+scenarios:
+  - name: 'User endpoints'
+    flow:
+      - post:
+          url: '/users'
+          headers:
+            authorization: 'Bearer {{ token }}'
+          json:
+            name: '{{ $randomString(5) }}'
+            login: '{{ $randomString(5) }}'
+            password: '{{ $randomString(5) }}'
+          capture:
+            json: $.id
+            as: user_id
+          expect:
+            - statusCode: 201
+      - get:
+          url: '/users'
+          headers:
+            authorization: 'Bearer {{ token }}'
+          expect:
+            - statusCode: 200
+      - get:
+          url: '/users/{{ user_id }}'
+          headers:
+            authorization: 'Bearer {{ token }}'
+          expect:
+            - statusCode: 200
+      - put:
+          url: '/users/{{ user_id }}'
+          headers:
+            authorization: 'Bearer {{ token }}'
+          json:
+            name: '{{ $randomString(5) }}'
+            login: '{{ $randomString(5) }}'
+            password: '{{ $randomString(5) }}'
+          expect:
+            - statusCode: 200
+      - delete:
+          url: '/users/{{ user_id }}'
+          headers:
+            authorization: 'Bearer {{ token }}'
+          expect:
+            - statusCode: 204

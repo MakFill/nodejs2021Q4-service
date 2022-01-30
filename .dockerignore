@@ -8,3 +8,5 @@ npm-debug.log
 logs
 upload
 **/build
+report-express.json.html
+report-fastify.json.html
