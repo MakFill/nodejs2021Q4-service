@@ -1,4 +1,4 @@
-FROM node:16.13-alpine as src
+FROM node:16.13-alpine
 
 WORKDIR /app
 
@@ -14,4 +14,4 @@ EXPOSE $PORT
 
 VOLUME [ "/app/logs" ]
 
-CMD ["npm", "run", "dev"]
+CMD ["npm", "run", "start:dev"]

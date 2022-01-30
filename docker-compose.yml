@@ -2,8 +2,8 @@ version: '3.9'
 
 services:
   node:
-    image: makfill/fastify
-    container_name: fastify-service
+    image: makfill/rest-service
+    container_name: rest-service
     build:
       context: .
       dockerfile: Dockerfile
