@@ -1,0 +1,12 @@
+npm-debug.log
+*.log
+.vscode
+.git
+.github
+.env
+**/node_modules
+logs
+upload
+**/build
+report-express.json.html
+report-fastify.json.html
