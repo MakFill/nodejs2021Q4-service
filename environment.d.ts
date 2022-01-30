@@ -12,6 +12,7 @@ declare global {
       POSTGRES_DB: string;
       POSTGRES_HOST: string;
       POSTGRES_HOST_DOCKER: string;
+      USE_FASTIFY: string;
     }
   }
 }
