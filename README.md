@@ -89,3 +89,25 @@ npm run lint
 Press <kbd>F5</kbd> to debug.
 
 For more information, visit: https://code.visualstudio.com/docs/editor/debugging
+
+### Load testing report
+
+# Express
+
+| Test duration | 20 sec |
+| Users created | 10 |
+| Users completed | 25 |
+| http.requests | 72 |
+| http.responses | 87 |
+| failed | 0 |
+| http.response_time (min/max/count/median/p90/p99) | 3/1493/62/273.2/1085.9/1436.8 ms |
+
+# Fastify
+
+| Test duration | 20 sec |
+| Users created | 100 |
+| Users completed | 100 |
+| http.requests | 500 |
+| http.responses | 500 |
+| failed | 0 |
+| http.response_time (min/max/count/median/p90/p99) | 14/1519/295/333.7/1176.4/1380.5 ms |
