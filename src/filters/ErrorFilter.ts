@@ -7,6 +7,7 @@ import {
   BadRequestException,
   NotFoundException,
   UnauthorizedException,
+  ForbiddenException,
 } from '@nestjs/common';
 import { QueryFailedError } from 'typeorm';
 import { writeToLogs } from '../utils';
@@ -41,6 +42,10 @@ export class ErrorFilter implements ExceptionFilter {
       const res = exception as UnauthorizedException;
       response.status(status).send(res.getResponse());
       writeToLogs(`UnauthorizedException: ${res.message}`, 'warn', res.stack);
+    } else if (status === HttpStatus.FORBIDDEN) {
+      const res = exception as ForbiddenException;
+      response.status(status).send(res.getResponse());
+      writeToLogs(`ForbiddenException: ${res.message}`, 'warn', res.stack);
     } else {
       response.status(status).send({
         statusCode: status,
