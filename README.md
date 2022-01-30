@@ -94,20 +94,28 @@ For more information, visit: https://code.visualstudio.com/docs/editor/debugging
 
 # Express
 
-| Test duration | 20 sec |
-| Users created | 10 |
-| Users completed | 25 |
-| http.requests | 72 |
-| http.responses | 87 |
-| failed | 0 |
+|                                                   |                                  |
+|---------------------------------------------------|----------------------------------|
+| Test duration                                     | 20 sec                           |
+| Users created                                     | 10                               |
+| Users completed                                   | 25                               |
+| http.requests                                     | 72                               |
+| http.responses                                    | 87                               |
+| Failed                                            | 0                                |
 | http.response_time (min/max/count/median/p90/p99) | 3/1493/62/273.2/1085.9/1436.8 ms |
+
+Detailed report: root folder/report-express.json.html
 
 # Fastify
 
-| Test duration | 20 sec |
-| Users created | 100 |
-| Users completed | 100 |
-| http.requests | 500 |
-| http.responses | 500 |
-| failed | 0 |
+|                                                   |                                    |
+|---------------------------------------------------|------------------------------------|
+| Test duration                                     | 20 sec                             |
+| Users created                                     | 100                                |
+| Users completed                                   | 100                                |
+| http.requests                                     | 500                                |
+| http.responses                                    | 500                                |
+| Failed                                            | 0                                  |
 | http.response_time (min/max/count/median/p90/p99) | 14/1519/295/333.7/1176.4/1380.5 ms |
+
+Detailed report: root folder/report-fastify.json.html
