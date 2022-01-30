@@ -30,28 +30,40 @@ export class ErrorFilter implements ExceptionFilter {
         error: 'id must be UUID format',
       });
       writeToLogs('id wrong format', 'warn');
-    } else if (status === HttpStatus.BAD_REQUEST) {
-      const res = exception as BadRequestException;
-      response.status(status).send(res.getResponse());
-      writeToLogs(`BadRequestException: ${res.message}`, 'warn', res.stack);
-    } else if (status === HttpStatus.NOT_FOUND) {
-      const res = exception as NotFoundException;
-      response.status(status).send(res.getResponse());
-      writeToLogs(`NotFoundException: ${res.message}`, 'warn', res.stack);
-    } else if (status === HttpStatus.UNAUTHORIZED) {
-      const res = exception as UnauthorizedException;
-      response.status(status).send(res.getResponse());
-      writeToLogs(`UnauthorizedException: ${res.message}`, 'warn', res.stack);
-    } else if (status === HttpStatus.FORBIDDEN) {
-      const res = exception as ForbiddenException;
-      response.status(status).send(res.getResponse());
-      writeToLogs(`ForbiddenException: ${res.message}`, 'warn', res.stack);
     } else {
-      response.status(status).send({
-        statusCode: status,
-        error: 'Internal server error',
-      });
-      writeToLogs(exception.message, 'error', exception.stack);
+      let res: HttpException;
+      switch (status) {
+        case HttpStatus.BAD_REQUEST:
+          res = exception as BadRequestException;
+          response.status(status).send(res.getResponse());
+          writeToLogs(`BadRequestException: ${res.message}`, 'warn', res.stack);
+          break;
+        case HttpStatus.NOT_FOUND:
+          res = exception as NotFoundException;
+          response.status(status).send(res.getResponse());
+          writeToLogs(`NotFoundException: ${res.message}`, 'warn', res.stack);
+          break;
+        case HttpStatus.UNAUTHORIZED:
+          res = exception as UnauthorizedException;
+          response.status(status).send(res.getResponse());
+          writeToLogs(
+            `UnauthorizedException: ${res.message}`,
+            'warn',
+            res.stack,
+          );
+          break;
+        case HttpStatus.FORBIDDEN:
+          res = exception as ForbiddenException;
+          response.status(status).send(res.getResponse());
+          writeToLogs(`ForbiddenException: ${res.message}`, 'warn', res.stack);
+          break;
+        default:
+          response.status(status).send({
+            statusCode: status,
+            error: 'Internal server error',
+          });
+          writeToLogs(exception.message, 'error', exception.stack);
+      }
     }
   }
 }
